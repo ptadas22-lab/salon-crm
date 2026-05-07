@@ -1,13 +1,90 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <title>Salon CRM</title>
+</head>
+
 <body>
 
-<button onclick="test()">Click Me</button>
+<h2>BookIt - Salon Client Manager</h2>
+
+<input id="clientName" placeholder="Name"><br><br>
+<input id="clientPhone" placeholder="Phone"><br><br>
+<input id="clientNotes" placeholder="Notes"><br><br>
+
+<button onclick="addClient()">Add Client</button>
+
+<h3>Client List</h3>
+<ul id="clientContainer"></ul>
 
 <script>
-function test() {
-  alert("Working");
+
+// ADD CLIENT
+async function addClient() {
+  let name = document.getElementById("clientName").value;
+  let phone = document.getElementById("clientPhone").value;
+  let notes = document.getElementById("clientNotes").value;
+
+  if (!name || !phone) {
+    alert("Enter name and phone");
+    return;
+  }
+
+  let res = await fetch("https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": "sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n",
+      "Authorization": "Bearer sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n"
+    },
+    body: JSON.stringify({ name, phone, notes, visits: 1 })
+  });
+
+  if (res.ok) {
+    alert("Client added");
+    fetchClients();
+  }
 }
+
+// FETCH CLIENTS
+async function fetchClients() {
+  let res = await fetch("https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients", {
+    headers: {
+      "apikey": "sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n",
+      "Authorization": "Bearer sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n"
+    }
+  });
+
+  let data = await res.json();
+  let container = document.getElementById("clientContainer");
+  container.innerHTML = "";
+
+  data.forEach(c => {
+    container.innerHTML += `
+      <li>
+        ${c.name} (${c.phone})
+        <button onclick="deleteClient(${c.id})">Delete</button>
+      </li>
+    `;
+  });
+}
+
+// DELETE
+async function deleteClient(id) {
+  await fetch(\`https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients?id=eq.\${id}\`, {
+    method: "DELETE",
+    headers: {
+      "apikey": "sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n",
+      "Authorization": "Bearer sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n"
+    }
+  });
+
+  fetchClients();
+}
+
+// LOAD DATA
+fetchClients();
+
 </script>
 
 </body>
