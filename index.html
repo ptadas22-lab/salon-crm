@@ -80,7 +80,7 @@ async function fetchClients() {
         📞 ${c.phone}<br>
         📝 ${c.notes}<br>
         <button onclick="deleteClient(${c.id})">Delete</button>
-        <button onclick="editClient(${c.id}, '${c.name}', '${c.phone}', '${c.notes}')">Edit</button>
+        <button onclick="editClient(${c.id}, \`${c.name}\`, \`${c.phone}\`, \`${c.notes}\`)">Edit</button>
       </li>
     `;
   });
