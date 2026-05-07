@@ -19,14 +19,17 @@
 
 <script>
 
-// attach button click properly
-document.getElementById("addBtn").addEventListener("click", addClient);
+// ✅ BUTTON EVENT (NO onclick issues)
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("addBtn").addEventListener("click", addClient);
+  fetchClients();
+});
 
-// ADD CLIENT
+// ✅ ADD CLIENT
 async function addClient() {
-  let name = document.getElementById("clientName").value;
-  let phone = document.getElementById("clientPhone").value;
-  let notes = document.getElementById("clientNotes").value;
+  const name = document.getElementById("clientName").value.trim();
+  const phone = document.getElementById("clientPhone").value.trim();
+  const notes = document.getElementById("clientNotes").value.trim();
 
   if (!name || !phone) {
     alert("Enter name and phone");
@@ -34,7 +37,7 @@ async function addClient() {
   }
 
   try {
-    let res = await fetch("https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients", {
+    const res = await fetch("https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/Clients", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -50,18 +53,20 @@ async function addClient() {
       })
     });
 
-    if (res.ok) {
-      alert("Client added ✅");
-      fetchClients();
-
-      // clear fields
-      document.getElementById("clientName").value = "";
-      document.getElementById("clientPhone").value = "";
-      document.getElementById("clientNotes").value = "";
-    } else {
-      let err = await res.text();
+    if (!res.ok) {
+      const err = await res.text();
       alert("Error: " + err);
+      return;
     }
+
+    alert("Client added ✅");
+
+    // clear fields
+    document.getElementById("clientName").value = "";
+    document.getElementById("clientPhone").value = "";
+    document.getElementById("clientNotes").value = "";
+
+    fetchClients();
 
   } catch (err) {
     alert("Network error");
@@ -69,33 +74,38 @@ async function addClient() {
   }
 }
 
-// FETCH CLIENTS
+// ✅ FETCH CLIENTS
 async function fetchClients() {
-  let res = await fetch("https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients", {
-    headers: {
-      "apikey": "sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n",
-      "Authorization": "Bearer sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n"
-    }
-  });
+  try {
+    const res = await fetch("https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/Clients", {
+      headers: {
+        "apikey": "sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n",
+        "Authorization": "Bearer sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n"
+      }
+    });
 
-  let data = await res.json();
+    const data = await res.json();
 
-  let container = document.getElementById("clientContainer");
-  container.innerHTML = "";
+    const container = document.getElementById("clientContainer");
+    container.innerHTML = "";
 
-  data.forEach(c => {
-    container.innerHTML += `
-      <li>
-        ${c.name} (${c.phone})
+    data.forEach(c => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <b>${c.name}</b> (${c.phone})
         <button onclick="deleteClient(${c.id})">Delete</button>
-      </li>
-    `;
-  });
+      `;
+      container.appendChild(li);
+    });
+
+  } catch (err) {
+    console.log(err);
+  }
 }
 
-// DELETE CLIENT
+// ✅ DELETE CLIENT
 async function deleteClient(id) {
-  await fetch(\`https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients?id=eq.\${id}\`, {
+  await fetch(`https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/Clients?id=eq.${id}`, {
     method: "DELETE",
     headers: {
       "apikey": "sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n",
@@ -105,9 +115,6 @@ async function deleteClient(id) {
 
   fetchClients();
 }
-
-// load data
-fetchClients();
 
 </script>
 
