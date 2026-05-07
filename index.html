@@ -12,12 +12,15 @@
 <input id="clientPhone" placeholder="Phone"><br><br>
 <input id="clientNotes" placeholder="Notes"><br><br>
 
-<button onclick="addClient(); alert('clicked')">Add Client</button>
+<button id="addBtn">Add Client</button>
 
 <h3>Client List</h3>
 <ul id="clientContainer"></ul>
 
 <script>
+
+// attach button click properly
+document.getElementById("addBtn").addEventListener("click", addClient);
 
 // ADD CLIENT
 async function addClient() {
@@ -30,19 +33,39 @@ async function addClient() {
     return;
   }
 
-  let res = await fetch("https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "apikey": "sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n",
-      "Authorization": "Bearer sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n"
-    },
-    body: JSON.stringify({ name, phone, notes, visits: 1 })
-  });
+  try {
+    let res = await fetch("https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": "sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n",
+        "Authorization": "Bearer sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n",
+        "Prefer": "return=representation"
+      },
+      body: JSON.stringify({
+        name: name,
+        phone: phone,
+        notes: notes,
+        visits: 1
+      })
+    });
 
-  if (res.ok) {
-    alert("Client added");
-    fetchClients();
+    if (res.ok) {
+      alert("Client added ✅");
+      fetchClients();
+
+      // clear fields
+      document.getElementById("clientName").value = "";
+      document.getElementById("clientPhone").value = "";
+      document.getElementById("clientNotes").value = "";
+    } else {
+      let err = await res.text();
+      alert("Error: " + err);
+    }
+
+  } catch (err) {
+    alert("Network error");
+    console.log(err);
   }
 }
 
@@ -56,6 +79,7 @@ async function fetchClients() {
   });
 
   let data = await res.json();
+
   let container = document.getElementById("clientContainer");
   container.innerHTML = "";
 
@@ -69,7 +93,7 @@ async function fetchClients() {
   });
 }
 
-// DELETE
+// DELETE CLIENT
 async function deleteClient(id) {
   await fetch(\`https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients?id=eq.\${id}\`, {
     method: "DELETE",
@@ -82,7 +106,7 @@ async function deleteClient(id) {
   fetchClients();
 }
 
-// LOAD DATA
+// load data
 fetchClients();
 
 </script>
