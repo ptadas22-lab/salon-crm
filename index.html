@@ -37,7 +37,7 @@ async function addClient() {
   }
 
   try {
-    const res = await fetch("https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/Clients", {
+    const res = await fetch("https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -77,7 +77,7 @@ async function addClient() {
 // ✅ FETCH CLIENTS
 async function fetchClients() {
   try {
-    const res = await fetch("https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/Clients", {
+    const res = await fetch("https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients", {
       headers: {
         "apikey": "sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n",
         "Authorization": "Bearer sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n"
@@ -105,7 +105,7 @@ async function fetchClients() {
 
 // ✅ DELETE CLIENT
 async function deleteClient(id) {
-  await fetch(`https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/Clients?id=eq.${id}`, {
+  await fetch(`https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients?id=eq.${id}`, {
     method: "DELETE",
     headers: {
       "apikey": "sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n",
