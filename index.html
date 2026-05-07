@@ -22,6 +22,8 @@ Your data is securely stored and accessible only to you.
 <ul id="clientContainer"></ul>
 
 <script>
+
+// ✅ ADD CLIENT
 async function addClient() {
   let name = document.getElementById("clientName").value;
   let phone = document.getElementById("clientPhone").value;
@@ -40,9 +42,9 @@ async function addClient() {
       "Authorization": "Bearer sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n"
     },
     body: JSON.stringify({
-      name: name,
-      phone: phone,
-      notes: notes,
+      name,
+      phone,
+      notes,
       visits: 1
     })
   });
@@ -51,6 +53,7 @@ async function addClient() {
     alert("Client added ✅");
     fetchClients();
 
+    // clear inputs
     document.getElementById("clientName").value = "";
     document.getElementById("clientPhone").value = "";
     document.getElementById("clientNotes").value = "";
@@ -60,6 +63,7 @@ async function addClient() {
   }
 }
 
+// ✅ FETCH CLIENTS
 async function fetchClients() {
   let res = await fetch("https://rgcaxgfzzfdscocllfjb.supabase.co/rest/v1/clients", {
     headers: {
@@ -80,12 +84,13 @@ async function fetchClients() {
         📞 ${c.phone}<br>
         📝 ${c.notes}<br>
         <button onclick="deleteClient(${c.id})">Delete</button>
-        <button onclick="editClient(${c.id}, \`${c.name}\`, \`${c.phone}\`, \`${c.notes}\`)">Edit</button>
+        <button onclick="editClient(${c.id})">Edit</button>
       </li>
     `;
   });
 }
 
+// ✅ DELETE CLIENT
 async function deleteClient(id) {
   let confirmDelete = confirm("Delete this client?");
   if (!confirmDelete) return;
@@ -107,10 +112,11 @@ async function deleteClient(id) {
   }
 }
 
-async function editClient(id, oldName, oldPhone, oldNotes) {
-  let name = prompt("Edit Name", oldName);
-  let phone = prompt("Edit Phone", oldPhone);
-  let notes = prompt("Edit Notes", oldNotes);
+// ✅ EDIT CLIENT (SAFE VERSION)
+async function editClient(id) {
+  let name = prompt("Enter new name");
+  let phone = prompt("Enter new phone");
+  let notes = prompt("Enter new notes");
 
   if (!name || !phone) return;
 
@@ -122,9 +128,9 @@ async function editClient(id, oldName, oldPhone, oldNotes) {
       "Authorization": "Bearer sb_publishable_I_qG_y6rTCKfhAQSKf3wLw_Q-fdNK1n"
     },
     body: JSON.stringify({
-      name: name,
-      phone: phone,
-      notes: notes
+      name,
+      phone,
+      notes
     })
   });
 
@@ -137,7 +143,9 @@ async function editClient(id, oldName, oldPhone, oldNotes) {
   }
 }
 
+// load data
 fetchClients();
+
 </script>
 
 </body>
